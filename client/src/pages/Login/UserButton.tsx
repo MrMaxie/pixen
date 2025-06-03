@@ -1,11 +1,8 @@
 import { Avatar, Button } from '@mantine/core';
+import type { FrontendUser } from '@shared/types';
 
 type Props = {
-    user: {
-        id: number;
-        name: string;
-        avatar: string;
-    };
+    user: FrontendUser;
     onClick?: () => void;
 };
 
@@ -17,21 +14,15 @@ export const UserButton = ({ user, onClick }: Props) => {
             fullWidth
             size="md"
             radius="md"
+            h={56}
+            lts={0.5}
+            fw={500}
             style={{
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'flex-start',
                 textAlign: 'left',
                 gap: 16,
-                overflow: 'hidden',
-                paddingTop: 8,
-                paddingBottom: 8,
-                minHeight: 56,
-                fontSize: 15,
-                fontWeight: 700,
-                fontFamily: 'inherit',
-                letterSpacing: 0.5,
-                marginBottom: 16,
                 pointerEvents: isInteractive ? undefined : 'none',
             }}
             onClick={onClick}

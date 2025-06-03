@@ -1,48 +1,61 @@
-import { PasswordInput, Button, Group, Stack } from '@mantine/core';
-import { useState } from 'react';
+import { PasswordInput, Button, Stack } from '@mantine/core';
+import { useForm } from '@mantine/form';
 import { UserButton } from './UserButton';
-
-type User = {
-    id: number;
-    name: string;
-    avatar: string;
-};
+import type { FrontendUser } from '@shared/types';
+import { client } from '@/client';
 
 type PasswordFormProps = {
-    user: User;
+    user: FrontendUser;
     onBack: () => void;
 };
 
 export function PasswordForm({ user, onBack }: PasswordFormProps) {
-    const [password, setPassword] = useState('');
+    const form = useForm({
+        initialValues: {
+            password: '',
+        },
+        validate: {
+            password: (value) => (value.length < 4 ? 'Password must be at least 4 characters' : null),
+        },
+    });
+
+    const handleSubmit = async (values: { password: string }) => {
+        const result = await client.auth.login({
+            id: user.id,
+            password: values.password,
+        });
+
+        console.log({ result });
+    };
 
     return (
-        <>
+        <form onSubmit={form.onSubmit(handleSubmit)}>
             <UserButton user={user} />
             <PasswordInput
                 label="Password"
                 placeholder="Enter your password"
-                value={password}
-                onChange={(event) => setPassword(event.currentTarget.value)}
                 autoFocus
                 radius="md"
                 w="100%"
                 withAsterisk
+                key={form.key('password')}
+                {...form.getInputProps('password')}
             />
             <Stack gap="xs" mt="md">
                 <Button
                     fullWidth
+                    type="submit"
                 >
                     Login
                 </Button>
                 <Button
                     fullWidth
-                    color="gray"
+                    variant="subtle"
                     onClick={onBack}
                 >
                     Back
                 </Button>
             </Stack>
-        </>
+        </form>
     );
 }

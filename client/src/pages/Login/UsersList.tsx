@@ -1,15 +1,10 @@
-import { Stack, Text } from '@mantine/core';
+import { ScrollArea, Stack, Text } from '@mantine/core';
 import { UserButton } from './UserButton';
-
-type User = {
-    id: number;
-    name: string;
-    avatar: string;
-};
+import type { FrontendUser } from '@shared/types';
 
 type Props = {
-    users: User[];
-    onSelect: (user: User) => void;
+    users: FrontendUser[];
+    onSelect: (user: string) => void;
 };
 
 export const UsersList = ({ users, onSelect }: Props) => {
@@ -18,15 +13,17 @@ export const UsersList = ({ users, onSelect }: Props) => {
             <Text size="sm" fw={400} style={{ alignSelf: 'flex-start' }}>
                 Select your user:
             </Text>
-            <Stack gap="xs" w="100%">
-                {users.map((user) => (
-                    <UserButton
-                        key={user.id}
-                        user={user}
-                        onClick={() => onSelect(user)}
-                    />
-                ))}
-            </Stack>
+            <ScrollArea.Autosize mah={300} w="100%" m="0">
+                <Stack gap="xs" w="100%">
+                    {users.map((user) => (
+                        <UserButton
+                            key={user.id}
+                            user={user}
+                            onClick={() => onSelect(user.id)}
+                        />
+                    ))}
+                </Stack>
+            </ScrollArea.Autosize>
         </>
     );
 };

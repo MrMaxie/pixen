@@ -1,29 +1,24 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
-import type { ApiResponse } from 'shared/dist';
-import { hc } from 'hono/client';
+import { RPCHandler } from '@orpc/server/fetch';
+import { rpcRouter } from './rpcRouter';
 
-export const app = new Hono()
+const app = new Hono();
+app.use(cors());
 
-    .use(cors())
+const rpcHandler = new RPCHandler(rpcRouter);
 
-    .get('/', (c) => {
-        return c.text('Hello Hono!');
-    })
-
-    .get('/hello', async (c) => {
-        const data: ApiResponse = {
-            message: 'Hello BHVR!',
-            success: true,
-        };
-
-        return c.json(data, { status: 200 });
+app.use('/rpc/*', async (c, next) => {
+    const { matched, response } = await rpcHandler.handle(c.req.raw, {
+        prefix: '/rpc',
+        context: {},
     });
 
-const client = hc<typeof app>('');
-export type Client = typeof client;
+    if (matched) {
+        return c.newResponse(response.body, response);
+    }
 
-export const hcWithType = (...args: Parameters<typeof hc>): Client =>
-    hc<typeof app>(...args);
+    await next();
+});
 
 export default app;

@@ -8,8 +8,10 @@
         "dev": "bun --watch run src/index.ts"
     },
     "dependencies": {
-        "hono": "^4.7.7",
-        "shared": "workspace:*"
+        "@orpc/server": "^1.3.0",
+        "hono": "^4.7.11",
+        "shared": "workspace:*",
+        "zod": "^3.25.49"
     },
     "devDependencies": {
         "@types/bun": "latest"

@@ -1,42 +1,40 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
     Center,
     Paper,
     Group,
     Stack,
+    Loader,
 } from '@mantine/core';
 import Logo from '@/assets/logo.svg?react';
 import './Login.css';
 import { UsersList } from './UsersList';
 import { PasswordForm } from './PasswordForm';
-
-// Define a type for user
-interface User {
-    id: number;
-    name: string;
-    avatar: string;
-}
-
-const users: User[] = [
-    {
-        id: 1,
-        name: 'Alice',
-        avatar: 'https://randomuser.me/api/portraits/women/68.jpg',
-    },
-    {
-        id: 2,
-        name: 'Bob',
-        avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
-    },
-    {
-        id: 3,
-        name: 'Charlie',
-        avatar: 'https://randomuser.me/api/portraits/men/85.jpg',
-    },
-];
+import type { FrontendUser } from '@shared/types';
+import { client } from '@/client';
+import _ from 'lodash';
 
 export const Login = () => {
-    const [selectedUser, setSelectedUser] = useState<User | null>(null);
+    const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+    const [users, setUsers] = useState<FrontendUser[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        setIsLoading(true);
+
+        const fetchUsers = async () => {
+            const response = await client.auth.getUsers();
+            setUsers(response);
+            setIsLoading(false);
+        };
+
+        fetchUsers();
+    }, []);
+
+    const selectedUser = useMemo(() => {
+        if (selectedUserId === null) return null;
+        return users.find(user => user.id === selectedUserId) || null;
+    }, [users, selectedUserId]);
 
     return (
         <Center h="100vh">
@@ -53,13 +51,30 @@ export const Login = () => {
                     mah={600}
                     miw={340}
                 >
-                    <Stack gap="lg" justify="center" align="stretch" h="100%" w="100%">
-                        {!selectedUser ? (
-                            <UsersList users={users} onSelect={setSelectedUser} />
-                        ) : (
-                            <PasswordForm user={selectedUser} onBack={() => setSelectedUser(null)} />
-                        )}
-                    </Stack>
+                    {isLoading && (
+                        <Center h="100%">
+                            <Loader
+                                size="md"
+                                type="dots"
+                                color="blue"
+                            />
+                        </Center>
+                    )}
+                    {!isLoading && (
+                        <Stack gap="lg" justify="center" align="stretch" h="100%" w="100%">
+                            {!selectedUser ? (
+                                <UsersList
+                                    users={users}
+                                    onSelect={setSelectedUserId}
+                                />
+                            ) : (
+                                <PasswordForm
+                                    user={selectedUser}
+                                    onBack={() => setSelectedUserId(null)}
+                                />
+                            )}
+                        </Stack>
+                    )}
                 </Paper>
             </Stack>
         </Center>

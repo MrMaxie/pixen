@@ -1,21 +1,21 @@
-import { implement } from '@orpc/server';
-import { contract } from '@shared/contract';
 import { RuntimeData } from './RuntimeData';
+import { withAuth, osWithHeaders } from './middleware/withAuth';
 import _ from 'lodash';
 
-const os = implement(contract);
+const osHeaders = osWithHeaders;
 const data = new RuntimeData();
 
-export const rpcRouter = os.router({
+
+export const rpcRouter = osHeaders.router({
     auth: {
-        getUsers: os.auth.getUsers.handler(async () =>
+        getUsers: osHeaders.auth.getUsers.handler(async () =>
             _.map(data.users, user => ({
                 id: user.id,
                 name: user.name,
                 avatar: user.avatar,
             }))
         ),
-        login: os.auth.login.handler(async ({ input }) => {
+        login: osHeaders.auth.login.handler(async ({ input }) => {
             const { id, password } = input;
             const user = _.find(data.users, { id, password });
 
@@ -40,5 +40,8 @@ export const rpcRouter = os.router({
                 token,
             };
         }),
+        whoami: osHeaders.auth.whoami
+            .use(withAuth(data))
+            .handler(async ({ context }) => context.user),
     }
 });

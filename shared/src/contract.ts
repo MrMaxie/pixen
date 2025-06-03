@@ -20,9 +20,18 @@ const login = oc
         token: z.string(),
     }));
 
+const whoami = oc.output(
+    z.object({
+        id: z.string(),
+        name: z.string(),
+        avatar: z.string(),
+    }),
+);
+
 export const contract = {
     auth: {
         getUsers,
         login,
+        whoami,
     },
 };

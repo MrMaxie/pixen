@@ -20,7 +20,6 @@ export const rpcRouter = os.router({
             const user = _.find(data.users, { id, password });
 
             if (!user) {
-                console.error(`Login failed for user ${id}`);
                 throw new Error('Invalid credentials');
             }
 

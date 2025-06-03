@@ -20,12 +20,16 @@ export function PasswordForm({ user, onBack }: PasswordFormProps) {
     });
 
     const handleSubmit = async (values: { password: string }) => {
-        const result = await client.auth.login({
-            id: user.id,
-            password: values.password,
-        });
-
-        console.log({ result });
+        try {
+            await client.auth.login({
+                id: user.id,
+                password: values.password,
+            });
+        } catch (error) {
+            console.error(error);
+            form.setFieldError('password', 'Invalid password');
+            return;
+        }
     };
 
     return (

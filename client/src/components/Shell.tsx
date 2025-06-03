@@ -1,9 +1,10 @@
+import type { PropsWithChildren } from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import { AppShell, Group, Burger, Skeleton } from '@mantine/core';
 import Logo from '@/assets/logo.svg?react';
 import './Shell.css';
 
-export const Shell = () => {
+export const Shell = ({ children }: PropsWithChildren<{}>) => {
     const [opened, { toggle }] = useDisclosure();
 
     return (
@@ -40,7 +41,7 @@ export const Shell = () => {
                         <Skeleton key={index} h={28} mt="sm" animate={false} />
                     ))}
             </AppShell.Navbar>
-            <AppShell.Main>Main</AppShell.Main>
+            <AppShell.Main>{children}</AppShell.Main>
         </AppShell>
     );
 };

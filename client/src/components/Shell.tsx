@@ -1,4 +1,3 @@
-import type { PropsWithChildren } from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import { AppShell, Group, Burger, NavLink, Menu, Avatar, Text, UnstyledButton } from '@mantine/core';
 import Logo from '@/assets/logo.svg?react';
@@ -9,7 +8,7 @@ import { IconChevronRight, IconLibraryPhoto, IconLogout, IconSettings, IconTags,
 import { getRoleName } from '@/utils/getRoleName';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 
-export const Shell = observer(({ children }: PropsWithChildren<{}>) => {
+export const Shell = observer(() => {
     const [isOpen, { toggle }] = useDisclosure();
     const store = useStore();
     const user = store.getCurrentUser();

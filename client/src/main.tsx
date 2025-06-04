@@ -5,6 +5,7 @@ import './index.css';
 import { App } from './App.tsx';
 import { MantineProvider } from '@mantine/core';
 import { theme } from './theme';
+import { StoreProvider } from '@/store';
 
 const main = () => {
     const $root = document.getElementById('root');
@@ -15,9 +16,11 @@ const main = () => {
 
     createRoot($root).render(
         <StrictMode>
-            <MantineProvider theme={theme} defaultColorScheme="dark">
-                <App />
-            </MantineProvider>
+            <StoreProvider>
+                <MantineProvider theme={theme} defaultColorScheme="dark">
+                    <App />
+                </MantineProvider>
+            </StoreProvider>
         </StrictMode>,
     );
 };

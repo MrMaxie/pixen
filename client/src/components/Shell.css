@@ -13,3 +13,17 @@
     text-transform: uppercase;
     letter-spacing: 1.5px;
 }
+
+/* make logo and title smaller on mobile */
+@media (max-width: 600px) {
+    .shell-logo {
+        max-width: 40px;
+        max-height: 40px;
+        width: 40px;
+        height: 40px;
+    }
+
+    .shell-title {
+        display: none;
+    }
+}

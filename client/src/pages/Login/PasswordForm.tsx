@@ -3,14 +3,16 @@ import { useForm } from '@mantine/form';
 import { UserButton } from './UserButton';
 import type { FrontendUser } from '@shared/types';
 import { client } from '@/client';
-import { store } from '@/store';
+import { useStore } from '@/store';
 
 type PasswordFormProps = {
     user: FrontendUser;
     onBack: () => void;
 };
 
-export function PasswordForm({ user, onBack }: PasswordFormProps) {
+export const PasswordForm = ({ user, onBack }: PasswordFormProps) => {
+    const store = useStore();
+
     const form = useForm({
         initialValues: {
             password: '',

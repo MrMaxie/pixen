@@ -1,7 +1,7 @@
 export enum UserRole {
     Admin = 'admin',
     User = 'user',
-    ReadOnly = 'readonly',
+    Guest = 'readonly',
 }
 
 export type User = {
@@ -12,7 +12,7 @@ export type User = {
     role: UserRole;
 };
 
-export type FrontendUser = Omit<User, 'password' | 'role'>;
+export type FrontendUser = Omit<User, 'password'>;
 
 export type Session = {
     userId: string;

@@ -1,51 +1,23 @@
-import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router';
 import { Center, Loader } from '@mantine/core';
 import { Login } from '@/pages/Login';
-import { Home } from '@/pages/Home';
-import { store } from '@/store';
-import { autorun } from 'mobx';
-import { client } from '@/client';
-import type { FrontendUser } from '@shared/types';
+import { Gallery } from '@/pages/Gallery';
+import { useStore } from '@/store';
+import { observer } from 'mobx-react';
+import { useEffect } from 'react';
+import { Shell } from './components/Shell';
+import { Tags } from './pages/Tags';
+import { Upload } from './pages/Upload';
+import { InteractiveGallery } from './pages/InteractiveGallery';
 
-
-export const App = () => {
-    const [token, setToken] = useState(store.token);
-    const [user, setUser] = useState<FrontendUser | null>(null);
-    const [loading, setLoading] = useState(false);
+export const App = observer(() => {
+    const store = useStore();
 
     useEffect(() => {
-        const dispose = autorun(() => {
-            setToken(store.token);
-        });
-        return dispose;
+        store.initWhoamiReaction();
     }, []);
 
-    useEffect(() => {
-        if (!token) {
-            setUser(null);
-            return;
-        }
-
-        setLoading(true);
-        client.auth
-            .whoami()
-            .then(u => {
-                setUser(u);
-                setLoading(false);
-            })
-            .catch(err => {
-                console.error(err);
-                store.setToken(null);
-                setLoading(false);
-            });
-    }, [token]);
-
-    if (!token) {
-        return <Login />;
-    }
-
-    if (loading || user === null) {
+    if (store.isWhoamiLoading) {
         return (
             <Center h="100vh">
                 <Loader size="md" type="dots" color="blue" />
@@ -53,11 +25,22 @@ export const App = () => {
         );
     }
 
+    if (!store.loggedUser) {
+        return <Login />;
+    }
+
     return (
         <BrowserRouter>
             <Routes>
-                <Route index element={<Home />} />
+                <Route element={<Shell />}>
+                    <Route index element={<Gallery />} />
+                    <Route path="gallery" element={<Gallery />} />
+                    <Route path="tags" element={<Tags />} />
+                    <Route path="upload" element={<Upload />} />
+                </Route>
+                <Route path="interactive-gallery" element={<InteractiveGallery />} />
+                <Route path="*" element={<Gallery />} />
             </Routes>
         </BrowserRouter>
     );
-};
+});

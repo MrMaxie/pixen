@@ -1,11 +1,13 @@
 import { oc } from '@orpc/contract';
 import { z } from 'zod';
+import { UserRole } from './types';
 
 const getUsers = oc
     .output(z.object({
         id: z.string(),
         name: z.string(),
         avatar: z.string(),
+        role: z.nativeEnum(UserRole),
     }).array());
 
 const login = oc
@@ -25,13 +27,17 @@ const whoami = oc.output(
         id: z.string(),
         name: z.string(),
         avatar: z.string(),
+        role: z.nativeEnum(UserRole),
     }),
 );
+
+const logout = oc.output(z.void());
 
 export const contract = {
     auth: {
         getUsers,
         login,
         whoami,
+        logout,
     },
 };

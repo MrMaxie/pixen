@@ -37,6 +37,8 @@
         "mobx-react": "^9.2.0",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
+        "react-grid-gallery": "^1.0.1",
+        "react-image-lightbox": "^5.1.4",
         "react-router": "^7.6.1",
         "recharts": "2",
         "server": "workspace:*",

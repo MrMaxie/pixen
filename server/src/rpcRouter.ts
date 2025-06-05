@@ -1,6 +1,5 @@
 import { RuntimeData } from './RuntimeData';
 import { withAuth, osWithHeaders } from './middlewares/withAuth';
-import _ from 'lodash';
 
 const osHeaders = osWithHeaders;
 const data = new RuntimeData();
@@ -12,13 +11,7 @@ export const rpcRouter = osHeaders.router({
         }),
         login: osHeaders.auth.login.handler(async ({ input }) => {
             const { id, password } = input;
-            const user = _.find(data.users, { id, password });
-
-            if (!user) {
-                throw new Error('Invalid credentials');
-            }
-
-            return await data.spawnSession(user.id);
+            return await data.login(id, password);
         }),
         whoami: osHeaders.auth.whoami
             .use(withAuth(data))

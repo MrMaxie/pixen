@@ -2,6 +2,9 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { RPCHandler } from '@orpc/server/fetch';
 import { rpcRouter } from './rpcRouter';
+import { initDatabase } from './db';
+
+await initDatabase();
 
 const app = new Hono();
 app.use(cors());
